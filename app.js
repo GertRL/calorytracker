@@ -1,12 +1,10 @@
-const ItemCtrl = (function (){
-    const Item = function (id,name,calories){
+const ItemCtrl = (function () {
+    const Item = function (id, name, calories) {
         this.id = id
         this.name = name
         this.calories = calories
     }
-})();
 
-const UICtrl = (function (){
     const data = {
         items: [
             {id: 0, name: 'Steak Dinner', calories: 1200},
@@ -15,18 +13,41 @@ const UICtrl = (function (){
         ],
         total: 0
     }
-
-    return {
-        logData: function (){
+    return{
+        getItems: function (){
+            return data.items
+        },
+        logData:function (){
             return data
         }
     }
 })();
 
-const App = (function (ItemCtrl,UICtrl ) {
+    const UICtrl = (function (){
+    return {
+        populateItemList: function (items){
+            let html = '';
+            items.forEach(function (item){
+                html += `<li class="collection-item" id="item-${item.id}">
+                <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+                <a href="#" class="secondary content">
+                    <i class="edit-item fa fa-pencil"></i>
+                </a>
+                </li>`;
+            });
+            document.querySelector("#item-list").innerHTML = html;
+        }
+    }
+
+})();
+
+const App = (function(ItemCtrl,  UICtrl )  {
     return {
         init: function (){
             console.log('Initializing App')
+            const items = ItemCtrl.getItems()
+            UICtrl.populateItemList(items)
+
         }
     }
 })(ItemCtrl,UICtrl)
