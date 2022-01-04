@@ -25,7 +25,10 @@ const ItemCtrl = (function () {
 
     const UICtrl = (function (){
         const UISelectors = {
-            itemList: '#item-list'
+            itemList: '#item-list',
+            itemNameInput: '#item-name',
+            itemCaloriesInput: '#item-calories',
+            addBtn: '.add-btn'
         }
     return {
         populateItemList: function (items){
@@ -39,17 +42,37 @@ const ItemCtrl = (function () {
                 </li>`;
             });
             document.querySelector(UISelectors.itemList).innerHTML = html;
+        },
+        getSelectors: function (){
+            return UISelectors;
+        }
+        getItemInput: function (){
+            return {
+                name:document.querySelector(UISelectors.itemNameInput).value,
+                calories:document.querySelector(UISelectors.itemCaloriesInput).value
+            }
         }
     }
 
 })();
 
-const App = (function(ItemCtrl,  UICtrl )  {
+const App = (function(ItemCtrl,  UICtrl ) {
+    const loeadEventListeners = function (){
+        const UISelectors = UICtrl.getSelectors();
+        document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+
+    }
+    const itemAddSubmit = function (event){
+        const input = UICtrl.getItemInput()
+        console.log('input')
+        event.preventDefault()
+    }
     return {
         init: function (){
             console.log('Initializing App')
             const items = ItemCtrl.getItems()
             UICtrl.populateItemList(items)
+            loeadEventListeners();
 
         }
     }
