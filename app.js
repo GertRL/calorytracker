@@ -75,11 +75,11 @@ const ItemCtrl = (function () {
           // loop through items and add calories
           data.items.forEach(function (item){
               total = total + item.calories;
-              console.log(total)
+              // console.log(total)
           });
           // set total calories in data structure
             data.total = total;
-            console.log(data.total)
+            // console.log(data.total)
             return data.total
         },
         logData:function (){
@@ -174,11 +174,20 @@ const App = (function(ItemCtrl, StorageCtrl,  UICtrl ) {
         // get items from storage
         const items = StorageCtrl.getItemsFromStorage()
         // populate items list
+        items.forEach(function (item){
+            // console.log(item['name'])
+            // console.log('item'['calories'])
+            ItemCtrl.addItem(item['name'],item['calories'])
+
+        })
+        const totalCalories = ItemCtrl.getTotalCalories();
+        UICtrl.showTotalCalories(totalCalories);
         UICtrl.populateItemList(items)
+
     }
     return {
         init: function (){
-            console.log('Initializing App')
+            // console.log('Initializing App')
             const items = ItemCtrl.getItems()
             UICtrl.populateItemList(items)
             loadEventListeners();
