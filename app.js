@@ -1,4 +1,37 @@
-    // Item Controller
+//  storage controller
+const StorageCtrl = (function (){
+    return {
+        storeItem: function (item){
+            let items;
+            // check if any items in ls
+            if(localStorage.getItem('items') === null) {
+                items = [];
+                // push new item
+                items.push(item);
+                // set ls
+                localStorage.setItem('items', JSON.stringify(items));
+            }else {
+                //get what is already in ls
+                items = JSON.parse(localStorage.getItem('items'));
+                // push new item
+                items.push(item);
+                //reset ls
+                localStorage.setItem('items', JSON.stringify(items));
+            }
+        },
+        getItemsFromStorage: function (){
+            let items;
+            if(localStorage.getItem('items') === null) {
+                items = [];
+            }else {
+                items = JSON.parse(localStorage.getItem('items'));
+            }
+            return items;
+        }
+    }
+})();
+
+// Item Controller
 const ItemCtrl = (function () {
     // Item Constructor
     const Item = function (id, name, calories) {
@@ -111,11 +144,14 @@ const ItemCtrl = (function () {
 })();
 
     // App Contorller
-const App = (function(ItemCtrl,  UICtrl ) {
+const App = (function(ItemCtrl, StorageCtrl,  UICtrl ) {
+    // load event listeners
     const loadEventListeners = function (){
         const UISelectors = UICtrl.getSelectors();
         document.querySelector(UISelectors.addBtn).
             addEventListener('click', itemAddSubmit);
+        // add document reload event
+        document.addEventListener('DOMContentLoaded', getItemsFromStorage)
 
     }
     const itemAddSubmit = function (event){
@@ -126,10 +162,19 @@ const App = (function(ItemCtrl,  UICtrl ) {
             //get total calories
             const totalCalories = ItemCtrl.getTotalCalories();
             UICtrl.showTotalCalories(totalCalories);
+            // store in LS
+            StorageCtrl.storeItem(newItem);
             // clear field
             UICtrl.clearInput();
         }
         event.preventDefault()
+    }
+    // get items from storage
+    const getItemsFromStorage = function (){
+        // get items from storage
+        const items = StorageCtrl.getItemsFromStorage()
+        // populate items list
+        UICtrl.populateItemList(items)
     }
     return {
         init: function (){
@@ -140,6 +185,6 @@ const App = (function(ItemCtrl,  UICtrl ) {
 
         }
     }
-})(ItemCtrl,UICtrl)
+})(ItemCtrl,StorageCtrl,UICtrl)
 
 App.init()
